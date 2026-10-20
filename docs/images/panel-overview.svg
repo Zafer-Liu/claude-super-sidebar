@@ -1,68 +1,75 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="820" viewBox="0 0 1120 820" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="980" viewBox="0 0 760 980" role="img" aria-labelledby="title desc">
   <title id="title">Claude Super Sidebar — illustrative overview</title>
-  <desc id="desc">Illustrative data only. Two independent conversations, each with its own agent tree and task flow.</desc>
+  <desc id="desc">Illustrative data only. A single-column panel: agent relationships, a stage-grouped task flow, and a preferences container with container colors and a collapsible version block.</desc>
   <defs>
-    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.title{font-size:22px;font-weight:650;fill:#192d40}.label{font-size:15px;fill:#526779}.strong{font-size:17px;font-weight:600}.small{font-size:13px;fill:#6d8191}</style>
-    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#8b9cac" stroke-width="1.5"/></marker>
+    <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.title{font-size:22px;font-weight:650;fill:#292d35}.label{font-size:14px;fill:#606570}.strong{font-size:16px;font-weight:600}.small{font-size:12px;fill:#606570}.tiny{font-size:11px;fill:#606570}</style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#818791" stroke-width="1.5"/></marker>
   </defs>
-  <rect width="1120" height="820" rx="20" fill="#f1f5f8"/>
+  <rect width="760" height="980" rx="20" fill="#f1f5f8"/>
   <text x="40" y="48" class="title">Claude Super Sidebar</text>
-  <text x="40" y="76" class="label">Independent conversations. Connected agents. Visible progress.</text>
-  <rect x="876" y="28" width="204" height="32" rx="16" fill="#e3eaf0"/>
-  <text x="978" y="49" text-anchor="middle" class="small">ILLUSTRATIVE · SAMPLE DATA</text>
-  <g transform="translate(32 104)">
-    <rect width="516" height="660" rx="14" fill="#fff" stroke="#d8e1e8"/>
-    <path d="M0 60H516" stroke="#e2e8ed"/>
-    <circle cx="25" cy="30" r="5" fill="#32936b"/>
-    <text x="42" y="36" class="strong" fill="#192d40">Conversation A</text>
-    <text x="492" y="36" text-anchor="end" class="small">Status</text>
-    <text x="24" y="95" class="strong" fill="#192d40">Team Panel</text>
-    <rect x="24" y="115" width="468" height="112" rx="10" fill="#edf8f1" stroke="#32936b"/>
-    <text x="42" y="144" class="strong" fill="#146547">Main agent</text>
-    <text x="472" y="144" text-anchor="end" class="label">Running</text>
-    <text x="42" y="173" class="label">Role: coordinator · Tools: 8</text>
-    <text x="42" y="202" class="label">Reviewing implementation</text>
-    <path d="M55 227V247H90V266" fill="none" stroke="#8b9cac" marker-end="url(#arrow)"/>
-    <rect x="64" y="270" width="428" height="70" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="82" y="299" class="strong" fill="#294f9b">Explore</text>
-    <text x="472" y="299" text-anchor="end" class="label">Completed</text>
-    <text x="82" y="323" class="label">Located relevant files</text>
-    <text x="24" y="382" class="strong" fill="#192d40">Task Flow</text>
-    <text x="492" y="382" text-anchor="end" class="small">1 / 2 completed</text>
-    <rect x="24" y="402" width="468" height="82" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="42" y="433" class="strong" fill="#294f9b">1. Inspect source</text>
-    <text x="42" y="461" class="label">Identified the relevant modules.</text>
-    <path d="M258 490V516" stroke="#8b9cac" marker-end="url(#arrow)"/>
-    <rect x="24" y="528" width="468" height="82" rx="10" fill="#edf8f1" stroke="#32936b"/>
-    <text x="42" y="559" class="strong" fill="#146547">2. Update implementation</text>
-    <text x="42" y="587" class="label">Applying changes for this request.</text>
+  <text x="40" y="74" class="label">One column. Connected agents. Stage-grouped progress.</text>
+  <rect x="556" y="28" width="164" height="30" rx="15" fill="#e3eaf0"/>
+  <text x="638" y="48" text-anchor="middle" class="tiny">ILLUSTRATIVE · SAMPLE DATA</text>
+
+  <g transform="translate(40 96)">
+    <rect width="680" height="832" rx="14" fill="#ffffff" stroke="#d8e1e8"/>
+
+    <!-- Agents -->
+    <text x="24" y="36" class="strong" fill="#292d35">代理关系 · Agents</text>
+    <text x="656" y="36" text-anchor="end" class="small">1 运行中 · running</text>
+    <rect x="24" y="52" width="632" height="92" rx="8" fill="#ffffff" stroke="#b5bac3"/>
+    <circle cx="42" cy="76" r="4" fill="#23733e"/>
+    <text x="56" y="81" class="strong" fill="#292d35">主代理 · Main agent</text>
+    <text x="640" y="81" text-anchor="end" class="label">运行中 · Running</text>
+    <text x="42" y="106" class="label">当前耗时 32 秒 · 5 工具调用</text>
+    <text x="42" y="128" class="small">Token 用量: 24,800 · 会话累计（含缓存） · 本轮输入 14,800</text>
+    <path d="M56 144V160H84V176" fill="none" stroke="#818791" marker-end="url(#arrow)"/>
+    <rect x="72" y="178" width="584" height="56" rx="8" fill="#ffffff" stroke="#b5bac3"/>
+    <circle cx="90" cy="200" r="4" fill="#255fbb"/>
+    <text x="104" y="205" class="strong" fill="#292d35">子代理 · Subagent</text>
+    <text x="640" y="205" text-anchor="end" class="label">已完成 · Completed</text>
+    <text x="90" y="224" class="small">读取相关文件</text>
+
+    <!-- Task flow -->
+    <text x="24" y="280" class="strong" fill="#292d35">任务流 · Task flow</text>
+    <text x="656" y="280" text-anchor="end" class="small">2 / 3 操作完成</text>
+    <text x="24" y="300" class="tiny">本轮已观测步骤 · 连线表示观测顺序</text>
+
+    <rect x="24" y="312" width="632" height="92" rx="8" fill="#ffffff" stroke="#b5bac3"/>
+    <text x="42" y="340" class="strong" fill="#292d35">1. 检查容器配色</text>
+    <text x="640" y="340" text-anchor="end" class="label">操作完成</text>
+    <text x="42" y="364" class="label">验证 · 通过 · 对话报告</text>
+    <text x="42" y="388" class="small">展开说明 · 2 操作</text>
+    <path d="M340 404V424" stroke="#818791" marker-end="url(#arrow)"/>
+
+    <rect x="24" y="428" width="632" height="92" rx="8" fill="#ffffff" stroke="#b5bac3"/>
+    <text x="42" y="456" class="strong" fill="#292d35">2. 修复按钮对比度</text>
+    <text x="640" y="456" text-anchor="end" class="label">操作完成</text>
+    <text x="42" y="480" class="label">验证 · 未观测</text>
+    <text x="42" y="504" class="small">展开说明 · 1 操作</text>
+    <path d="M340 520V540" stroke="#818791" marker-end="url(#arrow)"/>
+
+    <rect x="24" y="544" width="632" height="92" rx="8" fill="#ffffff" stroke="#b5bac3"/>
+    <text x="42" y="572" class="strong" fill="#292d35">3. 复查按钮显示</text>
+    <text x="640" y="572" text-anchor="end" class="label">操作完成</text>
+    <text x="42" y="596" class="label">验证 · 失败 · 对话报告</text>
+    <text x="42" y="620" class="small">展开说明 · 1 操作</text>
+
+    <!-- Preferences (container colors) -->
+    <rect x="24" y="664" width="632" height="144" rx="8" fill="#f5efe3" stroke="#b7ac98"/>
+    <text x="42" y="692" class="strong" fill="#342f28">偏好设置 · Preferences</text>
+    <text x="42" y="718" class="label" fill="#342f28">语言 · Language</text>
+    <rect x="560" y="700" width="80" height="26" rx="6" fill="#342f28"/>
+    <text x="600" y="718" text-anchor="middle" class="tiny" fill="#f5efe3">EN</text>
+    <text x="42" y="752" class="label" fill="#342f28">容器配色 · Container color</text>
+    <rect x="380" y="734" width="76" height="26" rx="6" fill="#342f28"/>
+    <text x="418" y="752" text-anchor="middle" class="tiny" fill="#f5efe3">白色</text>
+    <rect x="464" y="734" width="76" height="26" rx="6" fill="none" stroke="#b7ac98"/>
+    <text x="502" y="752" text-anchor="middle" class="tiny" fill="#342f28">米色</text>
+    <rect x="548" y="734" width="76" height="26" rx="6" fill="none" stroke="#b7ac98"/>
+    <text x="586" y="752" text-anchor="middle" class="tiny" fill="#342f28">黑色</text>
+    <text x="42" y="786" class="small" fill="#696052">版本信息 · Version — 插件版本 0.2.0 · 实现修订 1uucn9t</text>
   </g>
-  <g transform="translate(572 104)">
-    <rect width="516" height="660" rx="14" fill="#fff" stroke="#d8e1e8"/>
-    <path d="M0 60H516" stroke="#e2e8ed"/>
-    <circle cx="25" cy="30" r="5" fill="#6689cd"/>
-    <text x="42" y="36" class="strong" fill="#192d40">Conversation B</text>
-    <text x="492" y="36" text-anchor="end" class="small">Status</text>
-    <text x="24" y="95" class="strong" fill="#192d40">Team Panel</text>
-    <rect x="24" y="115" width="468" height="112" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="42" y="144" class="strong" fill="#294f9b">Main agent</text>
-    <text x="472" y="144" text-anchor="end" class="label">Completed</text>
-    <text x="42" y="173" class="label">Role: coordinator · Tools: 3</text>
-    <text x="42" y="202" class="label">Completed</text>
-    <path d="M55 227V247H90V266" fill="none" stroke="#8b9cac" marker-end="url(#arrow)"/>
-    <rect x="64" y="270" width="428" height="70" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="82" y="299" class="strong" fill="#294f9b">Reviewer</text>
-    <text x="472" y="299" text-anchor="end" class="label">Completed</text>
-    <text x="82" y="323" class="label">Documentation reviewed</text>
-    <text x="24" y="382" class="strong" fill="#192d40">Task Flow</text>
-    <text x="492" y="382" text-anchor="end" class="small">2 / 2 completed</text>
-    <rect x="24" y="402" width="468" height="82" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="42" y="433" class="strong" fill="#294f9b">1. Read documentation</text>
-    <text x="42" y="461" class="label">Checked the installation guide.</text>
-    <path d="M258 490V516" stroke="#8b9cac" marker-end="url(#arrow)"/>
-    <rect x="24" y="528" width="468" height="82" rx="10" fill="#eef3fc" stroke="#6689cd"/>
-    <text x="42" y="559" class="strong" fill="#294f9b">2. Improve examples</text>
-    <text x="42" y="587" class="label">Updated setup instructions.</text>
-  </g>
-  <text x="560" y="796" text-anchor="middle" class="small">Conceptual layout · Each panel is bound to its own conversation · Not a runtime screenshot</text>
+
+  <text x="380" y="956" text-anchor="middle" class="small">Conceptual single-column layout · Container colors apply to cards only · Not a runtime screenshot</text>
 </svg>

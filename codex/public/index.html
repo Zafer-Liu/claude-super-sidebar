@@ -1,30 +1,36 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="white">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>状态 status</title>
+  <title>状态 · Claude Super Sidebar</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/style.css">
   <script src="/app.js" defer></script>
 </head>
 <body>
   <header class="header">
-    <div><h1>状态 <span>status</span></h1><p>Codex 本地会话 · 只读观察</p></div>
-    <button id="refresh" type="button">刷新</button>
+    <h1 id="page-title">状态</h1>
+    <div class="controls"><button id="refresh" type="button">刷新</button></div>
   </header>
   <main>
-    <p id="notice" class="notice" role="status" aria-live="polite">正在连接本地会话记录…</p>
+    <p id="notice" class="notice" role="status" aria-live="polite">正在连接…</p>
     <div class="workspace">
       <section aria-labelledby="team-heading">
-        <div class="section-heading"><h2 id="team-heading">团队面板 <span>Team panel</span></h2><span id="counts"></span></div>
-        <div id="agents"><p class="empty">等待会话记录</p></div>
+        <div class="section-heading"><h2 id="team-heading">代理关系</h2><span id="counts"></span></div>
+        <div id="agents"></div>
       </section>
       <section aria-labelledby="flow-heading">
-        <div class="section-heading"><h2 id="flow-heading">任务流 <span>· Task Flow</span></h2><span id="progress"></span></div>
+        <div class="section-heading"><h2 id="flow-heading">任务流</h2><span id="progress"></span></div>
         <div id="plan"></div>
         <ol id="flow" class="flow"></ol>
         <p id="flow-empty" class="empty">等待本轮工作步骤</p>
+      </section>
+      <section class="preferences" aria-labelledby="preferences-heading">
+        <h2 id="preferences-heading">偏好设置</h2>
+        <div class="preference-row"><span id="language-label">语言</span><button id="language" type="button" aria-label="Switch to English">EN</button></div>
+        <div class="preference-row"><span id="theme-label">容器配色</span><div id="themes" class="theme-picker" role="group" aria-labelledby="theme-label"><button type="button" data-theme-choice="white" aria-pressed="true">白色</button><button type="button" data-theme-choice="beige" aria-pressed="false">米色</button><button type="button" data-theme-choice="black" aria-pressed="false">黑色</button></div></div>
+        <details class="version" id="version"><summary id="version-summary">版本信息</summary><dl class="version-list"><dt id="version-plugin-label">插件版本</dt><dd id="version-plugin">…</dd><dt id="version-revision-label">实现修订</dt><dd id="version-revision">…</dd></dl></details>
       </section>
     </div>
   </main>
