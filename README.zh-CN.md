@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="Team Panel — 原生代理状态与任务流面板" width="100%" />
+  <img src="docs/images/banner.svg" alt="Claude Super Sidebar — 原生代理状态与任务流面板" width="100%" />
 </p>
 
 <p align="center">
@@ -30,9 +30,9 @@
 
 ## 简介
 
-Team Panel 将主代理、子代理关系、实时执行详情和本轮对话的工作步骤整合到一个面板中。Claude Code 使用原生插件面板；独立 Codex CLI/App 使用只读本地会话面板。两种模式均无需构建前端。
+Claude Super Sidebar 将主代理、子代理关系、实时执行详情和本轮对话的工作步骤整合到一个面板中。Claude Code 使用原生插件面板；独立 Codex CLI/App 使用只读本地会话面板。两种模式均无需构建前端。
 
-Claude 插件名称为 `team-panel`，原生面板标题为 **状态 · Status**。Codex 页面标题为 **状态 status**，团队区域标题为 **团队面板 Team panel**。两种接入使用各自宿主的数据源，不需要额外调用模型生成任务摘要。
+仓库与产品名称为 **Claude Super Sidebar**（`claude-super-sidebar`）。宿主保留 `claude-` 前缀，因此原生插件安装 ID 继续使用 `team-panel`。Claude 插件名称为 `team-panel`，原生面板标题为 **状态 · Status**。Codex 页面标题为 **状态 status**，团队区域标题为 **团队面板 Team panel**。两种接入使用各自宿主的数据源，不需要额外调用模型生成任务摘要。
 
 | 接入 | 数据源与界面 | 当前验证范围 |
 | --- | --- | --- |
@@ -101,7 +101,7 @@ claude plugin enable team-panel@team-panel-local
 
 | 区块 | 展示内容 |
 | --- | --- |
-| 团队面板 · Team Panel | 主代理、子代理、上下级连线和可展开的执行详情 |
+| 团队面板 · Claude Super Sidebar | 主代理、子代理、上下级连线和可展开的执行详情 |
 | 任务流 · Task Flow | 当前请求中已观测到的工作步骤、状态和说明 |
 
 点击 **展开 / 收起** 查看或折叠代理详情。点击 **刷新** 可立即更新，面板也会每两秒自动刷新。
@@ -114,7 +114,7 @@ claude plugin enable team-panel@team-panel-local
 
 如果 Claude Desktop 发行环境提供 Codex 模型，按上面的 Claude 安装步骤配置插件，然后在宿主模型菜单中选择 Codex 即可。此场景无需修改 Codex 配置文件：会话事件与原生面板 API 均由 Claude 宿主提供。
 
-Team Panel 不负责添加模型或配置模型服务商。
+Claude Super Sidebar 不负责添加模型或配置模型服务商。
 
 ### 独立 Codex CLI 或 App
 

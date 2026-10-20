@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="820" viewBox="0 0 1120 820" role="img" aria-labelledby="title desc">
-  <title id="title">Team Panel — illustrative overview</title>
+  <title id="title">Claude Super Sidebar — illustrative overview</title>
   <desc id="desc">Illustrative data only. Two independent conversations, each with its own agent tree and task flow.</desc>
   <defs>
     <style>text{font-family:Inter,Segoe UI,Arial,sans-serif}.title{font-size:22px;font-weight:650;fill:#192d40}.label{font-size:15px;fill:#526779}.strong{font-size:17px;font-weight:600}.small{font-size:13px;fill:#6d8191}</style>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="#8b9cac" stroke-width="1.5"/></marker>
   </defs>
   <rect width="1120" height="820" rx="20" fill="#f1f5f8"/>
-  <text x="40" y="48" class="title">Team Panel</text>
+  <text x="40" y="48" class="title">Claude Super Sidebar</text>
   <text x="40" y="76" class="label">Independent conversations. Connected agents. Visible progress.</text>
   <rect x="876" y="28" width="204" height="32" rx="16" fill="#e3eaf0"/>
   <text x="978" y="49" text-anchor="middle" class="small">ILLUSTRATIVE · SAMPLE DATA</text>

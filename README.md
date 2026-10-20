@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.svg" alt="Team Panel — native agent visibility and task flow" width="100%" />
+  <img src="docs/images/banner.svg" alt="Claude Super Sidebar — native agent visibility and task flow" width="100%" />
 </p>
 
 <p align="center">
@@ -30,9 +30,9 @@
 
 ## Overview
 
-Team Panel brings the main agent, subagent relationships, execution details, and the current conversation’s work steps into one panel. Claude Code uses a native plugin pane; standalone Codex CLI/App uses a read-only local session dashboard. Neither requires a frontend build.
+Claude Super Sidebar brings the main agent, subagent relationships, execution details, and the current conversation’s work steps into one panel. Claude Code uses a native plugin pane; standalone Codex CLI/App uses a read-only local session dashboard. Neither requires a frontend build.
 
-The Claude plugin ID is `team-panel`, with a native pane titled **状态 · Status**. The Codex page is titled **状态 status**, and its team section is **团队面板 Team panel**. Each adapter uses its host's own data source; task summaries require no additional model call.
+The repository and product are **Claude Super Sidebar** (`claude-super-sidebar`). The native plugin retains the ID `team-panel` because the host reserves the `claude-` prefix. The Claude plugin ID is `team-panel`, with a native pane titled **状态 · Status**. The Codex page is titled **状态 status**, and its team section is **团队面板 Team panel**. Each adapter uses its host's own data source; task summaries require no additional model call.
 
 | Integration | Data source and UI | Current validation |
 | --- | --- | --- |
@@ -101,7 +101,7 @@ The plugin attempts to open **状态 · Status** on session startup. Type `/team
 
 | Section | What it shows |
 | --- | --- |
-| Team Panel | Main agent, subagents, parent–child connections, and expandable execution details |
+| Claude Super Sidebar | Main agent, subagents, parent–child connections, and expandable execution details |
 | Task Flow | Work steps observed in the current request, with status and explanations |
 
 Use **展开 / 收起** to expand or collapse an agent. Use **刷新** to refresh immediately; the pane also refreshes every two seconds.
@@ -114,7 +114,7 @@ Task-flow arrows indicate chronological execution. A new user request starts a f
 
 If your Claude Desktop deployment offers a Codex model, follow the Claude installation above and select that model in the host’s model picker. No Codex-specific configuration file is required: the Claude host supplies session events and the native pane API.
 
-Team Panel does not add models or configure model providers.
+Claude Super Sidebar does not add models or configure model providers.
 
 ### Standalone Codex CLI or App
 
@@ -152,7 +152,7 @@ Claude Code session
                               Session-scoped state
                                       │
                             Native Status pane
-                            ├─ Team Panel
+                            ├─ Claude Super Sidebar
                             └─ Task Flow
 ```
 

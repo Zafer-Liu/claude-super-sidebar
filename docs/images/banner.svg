@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="title desc">
-  <title id="title">Team Panel</title>
+  <title id="title">Claude Super Sidebar</title>
   <desc id="desc">Native agent visibility and conversation task flow.</desc>
   <defs>
     <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101927"/><stop offset="1" stop-color="#172c3b"/></linearGradient>
@@ -9,8 +9,8 @@
   <rect width="1280" height="400" rx="20" fill="url(#grid)"/>
   <path d="M64 72H104" stroke="#70dfb0" stroke-width="4"/>
   <g font-family="Inter,Segoe UI,Arial,sans-serif">
-    <text x="60" y="201" fill="#f3f7fb" font-size="72" font-weight="700" letter-spacing="-3">Team Panel</text>
-    <text x="64" y="248" fill="#b6c8d6" font-size="23">Every agent. Every step. One native pane.</text>
+    <text x="60" y="201" fill="#f3f7fb" font-size="48" font-weight="700" letter-spacing="-2">Claude Super Sidebar</text>
+    <text x="64" y="248" fill="#b6c8d6" font-size="23">Every agent. Every step. One sidebar.</text>
     <text x="64" y="326" fill="#8da7ba" font-size="14" letter-spacing="1">AGENT TREE  /  LIVE STATUS  /  TASK FLOW</text>
     <g fill="none" stroke="#58768a" stroke-width="2">
       <path d="M944 148V182H826V218M944 182H1096V218"/>

@@ -9,3 +9,20 @@ node_modules/
 verification/**/*.png
 verification/**/fixture/
 docs/images/status-panel-live.png
+
+# Credentials and local environment
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+
+# Generated output and caches
+dist/
+build/
+coverage/
+.cache/
+__pycache__/
+*.pyc
+Thumbs.db
