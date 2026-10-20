@@ -42,19 +42,21 @@ The repository and product are **Claude Super Sidebar** (`claude-super-sidebar`)
 ## Preview
 
 <p align="center">
-  <img src="docs/images/panel-overview.svg" alt="Illustrative overview of two independent conversations with agent trees and task flows" width="100%" />
+  <img src="docs/images/panel-overview.svg" alt="Single-column overview of agent relationships, stage-grouped task flow, and preferences" width="100%" />
 </p>
 
-Illustrative layout with sample data, not a runtime screenshot. Each conversation has its own agents, activity, and current-request task flow. Actual rendering differs between the Claude native pane and Codex browser panel.
+Illustrative layout with sample data, not a runtime screenshot. The single column shows agent relationships, a stage-grouped task flow, and a preferences container. Container colors (white, beige, black) apply to the cards only; the surrounding page background stays unchanged. Actual rendering differs between the Claude native pane and Codex browser panel.
 
 ## Features
 
 - **Agent relationships** — main agent and subagents in a unified tree, with directional connectors and details that expand in place.
 - **Execution status** — colored running, waiting, completed, and failed states. Claude shows active elapsed time; Codex shows recorded time without inferring process liveness.
 - **Agent details** — model, mode, role, observed token usage, available context usage, elapsed time, and tool-call count.
-- **Conversation task flow** — Claude uses tool operation titles with progress explanations. Codex derives titles and summaries from public progress messages, groups consecutive calls within one stage, and waits for all results before completion while preserving failures.
+- **Conversation task flow** — Both adapters group observed operations into work stages, use concise action titles, and show bounded operation details on expansion. Results remain separate from the stage description; failures and missing results are preserved.
 - **Per-request scope** — each new user request clears the previous flow; tool results preserve the current round. Up to 30 recent steps are shown.
 - **Plan display** — Claude extracts observable plan text. Codex displays successfully submitted `update_plan` steps; failed updates preserve the previous plan.
+- **Execution and verification** — “Operations completed” only describes tool execution. Explicit verification conclusions retain their conversation evidence and are labeled as assistant-reported; an exit code of zero never proves product behavior.
+- **Container colors** — white, beige, and black apply to cards and preferences; the surrounding page background stays unchanged. Authored controls support Chinese and English.
 - **Local parsing** — deriving the flow requires no additional LLM call.
 
 ## Requirements
@@ -101,8 +103,9 @@ The plugin attempts to open **状态 · Status** on session startup. Type `/team
 
 | Section | What it shows |
 | --- | --- |
-| Claude Super Sidebar | Main agent, subagents, parent–child connections, and expandable execution details |
-| Task Flow | Work steps observed in the current request, with status and explanations |
+| Agent relationships | Main agent, subagents, parent–child connections, and expandable execution details |
+| Task Flow | Work steps grouped into stages, with concise titles, status, operation details, and separate verification conclusions |
+| Preferences | Language, container colors (white / beige / black), and a collapsible version block (plugin version and implementation revision) |
 
 Use **展开 / 收起** to expand or collapse an agent. Use **刷新** to refresh immediately; the pane also refreshes every two seconds.
 
@@ -147,13 +150,14 @@ This is a companion browser UI, not a Claude `ui.render` plugin inside Codex, an
 ```text
 Claude Code session
   ├─ Agent / turn / tool events ──→ Agent status and usage
-  └─ Conversation transcript ─────→ Current-request work steps
+  └─ Conversation transcript ─────→ Stage-grouped work steps
                                       │
                               Session-scoped state
                                       │
-                            Native Status pane
-                            ├─ Claude Super Sidebar
-                            └─ Task Flow
+                            Native Status pane (single column)
+                            ├─ Agent relationships
+                            ├─ Task flow (stages, operations, verification)
+                            └─ Preferences (container colors, version)
 ```
 
 The manifest loads `hooks/register.tsx` through `hooks/hooks.json`. Session startup registers the command and refresh timer; lifecycle hooks observe execution; `session.messages()` supplies the task-flow parser. Native components and SVG connectors render the pane.

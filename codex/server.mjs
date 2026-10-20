@@ -32,7 +32,7 @@ export function conversationSnapshot(data, threadId) {
     warnings, updatedAt: data.updatedAt };
 }
 
-export function createPanelServer(store, { threadId = '' } = {}) {
+export function createPanelServer(store, { threadId = '', cwd = process.cwd() } = {}) {
   let defaultThreadId = threadId;
   return http.createServer(async (req, res) => {
     const port = res.socket.localPort;
@@ -55,6 +55,22 @@ export function createPanelServer(store, { threadId = '' } = {}) {
       if (!req.url?.startsWith('/') || req.url.startsWith('//')) { res.writeHead(400); res.end('Bad request'); return; }
       const url = new URL(req.url, `http://127.0.0.1:${port}`);
       const pathname = url.pathname;
+      if (pathname === '/api/version') {
+        // Version from package.json; revision is a content hash of the modules,
+        // so a hot reload that changes code shows a different revision.
+        let version = '';
+        try {
+          const pkg = JSON.parse(await readFile(path.join(cwd, 'package.json'), 'utf8'));
+          version = typeof pkg.version === 'string' ? pkg.version : '';
+        } catch { /* Version stays empty when package.json is unreadable. */ }
+        let hash = 0;
+        for (const file of ['codex/model.mjs', 'codex/public/app.js', 'codex/public/style.css', 'codex/public/index.html']) {
+          const text = await readFile(path.join(cwd, file), 'utf8').catch(() => '');
+          for (let i = 0; i < text.length; i++) hash = (Math.imul(hash, 31) + text.charCodeAt(i)) | 0;
+        }
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify({ version, revision: (hash >>> 0).toString(36) })); return;
+      }
       if (pathname === '/api/sessions') {
         const requested = url.searchParams.get('thread');
         if (requested !== null && !validThreadId(requested)) {
@@ -102,7 +118,7 @@ async function main() {
     console.log('Team Panel — Codex\nnode codex/server.mjs [--cwd PROJECT] [--thread ID] [--port 4317] [--codex-home DIR]\n每个面板固定观察一个对话；优先绑定 CODEX_THREAD_ID。'); return;
   }
   const store = new SessionStore({ sessionsDir: path.join(options.codexHome, 'sessions'), cwd: options.cwd });
-  const server = createPanelServer(store, { threadId: options.threadId });
+  const server = createPanelServer(store, { threadId: options.threadId, cwd: options.cwd });
   server.on('error', error => { console.error(`启动失败：${error.code === 'EADDRINUSE' ? '端口已占用，请使用 --port 指定其他端口。' : error.message}`); process.exitCode = 1; });
   server.listen(options.port, '127.0.0.1', () => {
     const query = options.threadId ? `?thread=${encodeURIComponent(options.threadId)}` : '';

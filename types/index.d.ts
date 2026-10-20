@@ -1,3 +1,12 @@
+export type Language = 'zh' | 'en';
+export type Theme = 'white' | 'beige' | 'black';
+export type Preferences = {
+  sessionId?: string;
+  language: Language;
+  theme: Theme;
+  revision: number;
+  loaded: boolean;
+};
 export type Member = {
   id: string;
   name: string;
@@ -26,6 +35,15 @@ export type Task = {
   blockedBy?: string[];
   source?: 'panel' | 'host';
   summary?: string;
+  kind?: 'stage' | 'plan';
+  operations?: Array<{ id: string; title: string; status: string }>;
+  operationCount?: number;
+  verification?: {
+    status: 'unknown' | 'passed' | 'failed' | 'skipped';
+    evidence?: string;
+    source?: 'assistant';
+  };
+  titleGenerated?: boolean;
 };
 export type Panel = {
   sessionId?: string;
@@ -49,9 +67,10 @@ export type Panel = {
   mainCalls?: number;
   mainTool?: string;
   taskNotice?: string;
+  liveTurnId?: string;
 };
 declare module 'claude-code' {
   interface PluginState {
-    'team-panel': { panel: Panel };
+    'team-panel': { panel: Panel; preferences: Preferences };
   }
 }

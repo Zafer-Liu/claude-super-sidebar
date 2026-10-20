@@ -1,101 +1,225 @@
 import { atom, read, update } from 'claude-code';
 import type { EngineInterface, RenderInput } from 'claude-code';
-import { initial, label, treeRows } from './model';
+import { initial, treeRows } from './model';
+import { summaryBody } from './steps';
+import type { Theme } from '../types';
+import { activityLabel, generatedLabel, operationLabel, statusLabel, taskStatusLabel, verificationLabel, switchLanguage, switchTheme, t, taskTitle } from './i18n';
 
 const panel = atom({ plugin: 'team-panel', key: 'panel' } as const, initial);
-
-const nodePalette = (status: string) => {
-  if (status === 'running' || status === 'in_progress') return { ink: '#146547', fill: '#edf8f1', line: '#32936b' };
-  if (status === 'completed') return { ink: '#294f9b', fill: '#eef3fc', line: '#6689cd' };
-  if (status === 'failed') return { ink: '#9b3141', fill: '#fff0f2', line: '#cd6575' };
-  if (status === 'waiting' || status === 'pending') return { ink: '#815515', fill: '#fff7e8', line: '#b78a3d' };
-  return { ink: '#50566b', fill: '#f2f3f7', line: '#8a91a7' };
+const preferences = atom({ plugin: 'team-panel', key: 'preferences' } as const, { language: 'zh', theme: 'white', revision: 0, loaded: false } as import('../types').Preferences);
+const palettes = {
+  white: { background: '#ffffff', ink: '#292d35', muted: '#606570', border: '#b5bac3', connector: '#767c88',
+    running: '#23733e', completed: '#255fbb', failed: '#b42332', waiting: '#805800' },
+  beige: { background: '#f5efe3', ink: '#342f28', muted: '#696052', border: '#b7ac98', connector: '#81745f',
+    running: '#326b37', completed: '#305da3', failed: '#a82b32', waiting: '#795600' },
+  black: { background: '#191a1d', ink: '#e6e6e1', muted: '#aaaab2', border: '#575961', connector: '#9597a2',
+    running: '#7bd99a', completed: '#8bb9ff', failed: '#ff939d', waiting: '#eac772' },
+} as const;
+const themes: Theme[] = ['white', 'beige', 'black'];
+const statusColor = (status: string, palette: typeof palettes[Theme]) => {
+  if (status === 'running' || status === 'in_progress') return palette.running;
+  if (status === 'completed') return palette.completed;
+  if (status === 'failed') return palette.failed;
+  if (status === 'waiting' || status === 'pending' || status === 'killed') return palette.waiting;
+  return palette.ink;
 };
+const elbowArrow = (color: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="28" viewBox="0 0 48 28"><path d="M8 0 V12 H36 V25 M32 21 L36 25 L40 21" fill="none" stroke="${color}" stroke-width="1"/></svg>`;
+const stepArrow = (color: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0 V21 M8 17 L12 21 L16 17" fill="none" stroke="${color}" stroke-width="1"/></svg>`;
+const preview = (value: string) => {
+  const compact = value.replace(/\s+/g, ' ').trim();
+  return compact.length > 180 ? `${compact.slice(0, 179)}…` : compact;
+};
+const marker = (status: string) => status === 'completed' ? '✓' : status === 'failed' ? '×'
+  : status === 'running' || status === 'in_progress' ? '●' : '○';
 
-const connectorSvg = (stroke: string) => `<svg xmlns="http://www.w3.org/2000/svg" width="72" height="38" viewBox="0 0 72 38"><path d="M16 0 V14 Q16 22 24 22 H52 V33" fill="none" stroke="${stroke}" stroke-width="2"/><path d="M48 28 L52 33 L56 28" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+// A short content hash of the loaded modules, so a hot reload that changes the
+// code is visible as a different revision. Read once per module load.
+async function implementationRevision($: EngineInterface): Promise<string> {
+  const files = ['hooks/pane.tsx', 'hooks/steps.ts', 'hooks/i18n.ts', 'hooks/register.tsx', 'hooks/model.ts'];
+  let hash = 0;
+  for (const file of files) {
+    const text = await $.fs.read(`${$.plugin.root}/${file}`).catch(() => '');
+    for (let i = 0; i < text.length; i++) hash = (Math.imul(hash, 31) + text.charCodeAt(i)) | 0;
+  }
+  return (hash >>> 0).toString(36);
+}
+async function pluginVersion($: EngineInterface): Promise<string> {
+  const raw = await $.fs.read(`${$.plugin.root}/.claude-plugin/plugin.json`).catch(() => '');
+  const match = /"version"\s*:\s*"([^"]+)"/.exec(raw);
+  return match?.[1] ?? '';
+}
 
 export async function drawPanel($: EngineInterface, e: RenderInput, refresh: () => Promise<void>) {
   const { Box, Text, Button, Markdown } = $.ui.resolve(e);
+  // MarkdownProps exposes no color/style; rich text keeps the native host renderer.
   const Svg = e.surface === 'desktop' ? $.ui.resolve(e).Svg : undefined;
   const p = await read($, panel);
-  const toggle = (id: string) => update($, panel, current => ({ ...current, selected: current.selected === id ? '' : id }));
+  const pref = await read($, preferences);
+  const sessionId = await $.session.id();
+  const lang = pref.sessionId === sessionId ? pref.language : 'zh';
+  const theme = pref.sessionId === sessionId && (pref.theme === 'beige' || pref.theme === 'black') ? pref.theme : 'white';
+  const palette = palettes[theme];
+  const buttonVariant = theme === 'black' ? 'primary' as const : 'secondary' as const;
+  const tr = (key: Parameters<typeof t>[1]) => t(lang, key);
+  // Provenance distinguishes generated operation titles from supplied prose.
+  const messages = await $.session.messages().catch(() => []);
+  const version = await pluginVersion($);
+  const revision = await implementationRevision($);
+  if (p.sessionId !== sessionId || await $.session.id() !== sessionId) return <Box />;
+  const toggle = async (id: string) => {
+    if (await $.session.id() !== sessionId) return;
+    await update($, panel, current => current.sessionId !== sessionId ? current
+      : { ...current, selected: current.selected === id ? '' : id });
+  };
   const rows = [{ member: {
-    id: 'main', name: '主代理', description: p.project, status: p.mainStatus,
+    id: 'main', name: tr('main'), description: p.project, status: p.mainStatus,
     mode: '主会话', role: 'lead · 协调者', model: p.mainModel, tokens: p.mainTokens,
     observedAt: p.mainStartedAt ?? Date.now(), recent: p.mainRecent, calls: p.mainCalls ?? 0,
     activeStartedAt: p.mainActiveStartedAt, currentDurationMs: p.mainCurrentDurationMs,
-    endedAt: undefined as number | undefined, durationMs: p.mainDurationMs,
-    tool: p.mainTool,
+    endedAt: undefined as number | undefined, durationMs: p.mainDurationMs, tool: p.mainTool,
   }, depth: 0 }, ...treeRows(p.members)];
-  const tasks = p.tasks;
-  return <Box flexDirection="column" gap="md" padding="sm">
-    <Box flexDirection="column" gap="sm" paddingY="sm" borderStyle="round" borderDimColor={true}>
-      <Box flexDirection="row" justifyContent="space-between" alignItems="center">
-        <Text bold>团队面板 · Team Panel</Text>
-        <Button key="refresh" label="刷新" onPress={refresh} />
+  // Plan identity is explicit; ordinary prose never promotes a stage to a plan.
+  const plans = p.tasks.filter(task => task.kind === 'plan');
+  const planIds = new Set(plans.map(task => task.id));
+  const tasks = p.tasks.filter(task => !planIds.has(task.id) && Boolean(task.subject.trim()));
+  const running = rows.filter(({ member }) => member.status === 'running').length;
+  return <Box flexDirection="column" width="100%" gap="lg" padding="sm">
+    <Box flexDirection="column" gap="sm">
+      <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap="sm" flexWrap="wrap">
+        <Text bold>{tr('agents')} · {rows.length}</Text>
+        <Box flexDirection="row" gap="xs" alignItems="center">
+          <Button key="refresh" label={tr('refresh')} variant={buttonVariant} onPress={refresh} />
+        </Box>
       </Box>
-      <Text dimColor>{p.project || '当前会话'} · {rows.length} 成员 · {p.members.filter(m => m.status === 'running').length + (p.mainStatus === 'running' ? 1 : 0)} 运行中</Text>
-      {p.error && <Text color="yellow">{p.error}</Text>}
-      <Box flexDirection="row" gap="sm" flexWrap="wrap" marginTop="xs">
-        {['running', 'waiting', 'completed', 'failed'].map(status => <Text color={nodePalette(status).ink}>{label(status)}</Text>)}
-      </Box>
+      <Text dimColor>{running} {statusLabel(lang, 'running')} · {tr('observedOnly')}</Text>
+      {p.error && <Text color={palette.waiting}>{generatedLabel(lang, p.error)}</Text>}
       {rows.map(({ member: m, depth }) => {
         const expanded = p.selected === m.id;
         const active = m.status === 'running';
-        const elapsed = active ? Date.now() - (m.activeStartedAt ?? m.observedAt) : (m.currentDurationMs ?? m.durationMs ?? ((m.endedAt ?? m.observedAt) - m.observedAt));
+        const terminal = ['completed', 'failed', 'killed'].includes(m.status);
+        const elapsed = active ? Date.now() - (m.activeStartedAt ?? m.observedAt)
+          : (m.currentDurationMs ?? m.durationMs ?? ((m.endedAt ?? m.observedAt) - m.observedAt));
         const seconds = Math.max(0, Math.floor(elapsed / 1000));
-        const parent = rows.find(row => row.member.id === ('parentId' in m ? m.parentId : undefined))?.member.name || '主代理';
-        const palette = nodePalette(m.status);
-        return <Box key={`branch:${m.id}`} flexDirection="column" gap={0} marginLeft={Math.min(depth, 4) * 2}>
-          {depth > 0 && <Box flexDirection="row" alignItems="center" gap="xs">
-            {Svg ? <Svg source={connectorSvg(palette.line)} alt={`${parent} 连接到 ${m.name}`} width={72} height={38} />
-              : <Text color={palette.ink}>└─</Text>}
-            <Text color={palette.ink}>{parent} → {m.name}</Text>
+        const parent = rows.find(row => row.member.id === ('parentId' in m ? m.parentId : undefined))?.member.name || tr('main');
+        const activity = m.tool ? activityLabel(lang, m.tool, messages)
+          : active ? tr('working') : generatedLabel(lang, m.recent) || tr('noActivity');
+        return <Box key={`branch:${m.id}`} flexDirection="column" gap={0} marginLeft={Math.min(depth, 4) * 2} minWidth={0}>
+          {depth > 0 && <Box flexDirection="row" gap="xs" alignItems="center">
+            {Svg ? <Svg source={elbowArrow('#818791')} alt={tr('parent')} width={48} height={28} />
+              : <Text dimColor>└─↓</Text>}
           </Box>}
           <Box key={`card:${m.id}`} flexShrink={1} minWidth={0} flexDirection="column" gap="sm"
-            padding="sm" borderStyle="round" borderColor={palette.line} backgroundColor={palette.fill}>
+            padding="sm" borderStyle="single" borderColor={palette.border} backgroundColor={palette.background}>
             <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap="sm">
-              <Box flexDirection="column" flexGrow={1} flexShrink={1} minWidth={0}>
-                <Text bold color={palette.ink}>{m.name} · {label(m.status)}</Text>
-                <Text color={palette.ink}>{m.description || '当前会话'}</Text>
+              <Box flexDirection="column" flexGrow={1} flexShrink={1} minWidth={0} gap="xs">
+                <Text color={palette.ink} bold>{m.name}</Text>
+                <Text color={statusColor(m.status, palette)}>{marker(m.status)} {statusLabel(lang, m.status)}</Text>
               </Box>
-              <Button key={`expand:${m.id}`} label={expanded ? '收起' : '展开'} onPress={() => toggle(m.id)} />
+              <Button key={`expand:${m.id}`} variant={buttonVariant} label={expanded ? tr('collapse') : tr('expand')} onPress={() => toggle(m.id)} />
             </Box>
+            <Text color={palette.muted}>{tr('elapsed')} {seconds} {tr('seconds')} · {m.calls ?? 0} {tr('calls')}</Text>
+            {!terminal && <Text color={palette.muted}>{tr('activity')}: {activity}</Text>}
+            {expanded && m.description && <Text color={palette.ink}>{m.description}</Text>}
             {expanded && <Box key={`details:${m.id}`} flexDirection="column" gap="xs">
-              {depth > 0 && <Text dimColor>上级：{parent}</Text>}
-              <Text>状态：{label(m.status)}</Text>
-              <Text>模式：{m.mode || '子代理（加载前启动）'}</Text>
-              <Text>团队角色：{m.role || ('type' in m ? m.type : 'lead')}</Text>
-              <Text>模型：{m.model || '暂无数据'}</Text>
-              <Text>Token 用量：{m.tokens === undefined ? '暂无已完成回合统计' : `${m.tokens.toLocaleString()}（已观测累计，含缓存）`}</Text>
-              <Text>当前上下文：{m.id === 'main' ? `${p.mainContextTokens?.toLocaleString() ?? '暂无数据'} tokens` : '暂无数据'}</Text>
-              <Text>当前耗时：{seconds} 秒</Text>
-              <Text>运行状态：{active ? (m.tool ? m.tool : '正在处理当前任务') : label(m.status)} · 累计调用 tool {m.calls ?? 0} 次</Text>
+              {depth > 0 && <Text color={palette.muted}>{tr('parent')}: {parent}</Text>}
+              <Text color={palette.ink}>{tr('mode')}: {generatedLabel(lang, m.mode || '子代理（加载前启动）')}</Text>
+              <Text color={palette.ink}>{tr('role')}: {generatedLabel(lang, m.role || ('type' in m ? m.type : 'lead'))}</Text>
+              <Text color={palette.ink}>{tr('model')}: {m.model || tr('unavailable')}</Text>
+              <Text color={palette.ink}>{tr('tokens')}: {m.tokens === undefined ? tr('tokenUnavailable') : `${m.tokens.toLocaleString()} · ${tr('tokenCumulative')}`}</Text>
+              <Text color={palette.ink}>{tr('context')}: {m.id === 'main'
+                ? (p.mainContextTokens !== undefined ? `${p.mainContextTokens.toLocaleString()} tokens` : tr('contextUnavailable'))
+                : tr('contextUnavailable')}</Text>
             </Box>}
           </Box>
         </Box>;
       })}
     </Box>
-    <Box flexDirection="column" gap="sm" paddingY="sm" borderStyle="round" borderDimColor={true}>
-      <Text bold>任务流 · Task Flow · {p.tasks.filter(t => t.status === 'completed').length}/{p.tasks.length}</Text>
-      <Text dimColor>本轮工作步骤 · 箭头表示执行顺序</Text>
-      {tasks.length === 0 ? <Text dimColor>等待本轮工作步骤</Text> : tasks.slice(0, 30).map((t, index) => {
-        const palette = nodePalette(t.status);
-        return <Box key={`task-flow:${t.id}`} flexDirection="column" gap={0}>
-          {index > 0 && <Box flexDirection="row" justifyContent="center" alignItems="center">
-            {Svg ? <Svg source={`<svg xmlns="http://www.w3.org/2000/svg" width="28" height="32" viewBox="0 0 28 32"><path d="M14 0 V26 M8 20 L14 26 L20 20" fill="none" stroke="${palette.line}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`} alt="下一步骤" width={28} height={32} />
-              : <Text color={palette.ink}>↓</Text>}
-          </Box>}
-          <Box key={`task:${t.id}`} flexDirection="column" padding="sm" gap="xs" borderStyle="round"
-            borderColor={palette.line} backgroundColor={palette.fill}>
-            <Box flexDirection="row" justifyContent="space-between" alignItems="center">
-              <Text bold color={palette.ink}>{index + 1}. {t.subject}</Text>
-              <Text color={palette.ink}>{label(t.status)}</Text>
+    <Box flexDirection="column" gap="sm">
+      <Text bold>{tr('tasks')} · {tasks.filter(task => task.status === 'completed').length}/{tasks.length}{p.mainStatus === 'running' ? ` · ${statusLabel(lang, 'in_progress')}` : ''}</Text>
+      <Text dimColor>{tr('stepOrder')}</Text>
+      {plans.map(plan => {
+        const expanded = p.selected === `plan:${plan.id}`;
+        const body = plan.summary === t('zh', 'noPlan') ? tr('noPlan') : plan.summary;
+        return <Box key={`plan:${plan.id}`} flexDirection="column" gap="sm" padding="sm" borderStyle="single" borderColor={palette.border} backgroundColor={palette.background} minWidth={0}>
+          <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap="sm">
+            <Box flexDirection="column" gap="xs" flexShrink={1} minWidth={0}>
+              <Text color={palette.ink} bold>{tr('plan')}</Text>
+              <Text color={statusColor(plan.status, palette)}>{taskStatusLabel(lang, plan.status)}</Text>
             </Box>
-            {t.summary && <Markdown text={t.summary} />}
+            <Button key={`expand-plan:${plan.id}`} variant={buttonVariant} label={expanded ? tr('collapse') : tr('expand')}
+              onPress={() => toggle(`plan:${plan.id}`)} />
+          </Box>
+          {expanded && body && <Markdown text={body} />}
+          {expanded && (plan.operations?.length ?? 0) > 0 && <Box flexDirection="column" gap="xs">
+            <Text color={palette.muted}>{plan.operationCount ?? plan.operations?.length} {tr('operations')}</Text>
+            {plan.operations!.slice(0, 40).map(operation => <Text key={operation.id} color={palette.ink}>
+              {operationLabel(lang, operation, messages)} · {taskStatusLabel(lang, operation.status)}
+            </Text>)}
+          </Box>}
+        </Box>;
+      })}
+      {tasks.length === 0 ? (p.mainStatus !== 'running' && <Text dimColor>{tr('emptyTasks')}</Text>) : tasks.slice(0, 30).map((task, index) => {
+        const expanded = p.selected === `task:${task.id}`;
+        const summary = summaryBody(task.summary ?? '');
+        return <Box key={`task-flow:${task.id}`} flexDirection="column" gap={0} minWidth={0}>
+          {index > 0 && <Box paddingLeft="sm">
+            {Svg ? <Svg source={stepArrow('#818791')} alt={tr('stepOrder')} width={24} height={24} />
+              : <Text dimColor>↓</Text>}
+          </Box>}
+          <Box key={`task:${task.id}`} flexDirection="column" padding="sm" gap="sm" borderStyle="single" borderColor={palette.border} backgroundColor={palette.background} minWidth={0}>
+            <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap="sm">
+              <Box flexDirection="column" flexGrow={1} flexShrink={1} minWidth={0} gap="xs">
+                <Text color={palette.ink} bold>{index + 1}. {taskTitle(lang, task, messages)}</Text>
+                <Text color={statusColor(task.status, palette)}>{marker(task.status)} {task.status === 'completed' && !task.operationCount ? tr('replyComplete') : taskStatusLabel(lang, task.status)}</Text>
+              </Box>
+              {((task.operations?.length ?? 0) > 0 || Boolean(task.summary && task.summary.trim().length > 180) || Boolean(task.verification?.evidence)) && <Button key={`expand-task:${task.id}`} variant={buttonVariant} label={expanded ? tr('collapse') : tr('expand')}
+                onPress={() => toggle(`task:${task.id}`)} />}
+            </Box>
+            {(expanded ? task.summary : summary) && (expanded ? <Markdown text={task.summary!} /> : <Text color={palette.muted}>{preview(summary)}</Text>)}
+            {(task.operations?.length ?? 0) > 0 && <Box flexDirection="column" gap="xs">
+              {task.operations!.slice(0, expanded ? 40 : 3).map(operation => <Text key={operation.id} color={statusColor(operation.status, palette)}>
+                {marker(operation.status)} {operationLabel(lang, operation, messages)} · {taskStatusLabel(lang, operation.status)}
+              </Text>)}
+              {(task.operationCount ?? 0) > (expanded ? 40 : 3) && <Text color={palette.muted}>{task.operationCount} {tr('operations')}</Text>}
+            </Box>}
+            {task.kind === 'stage' && (expanded || task.verification?.status && task.verification.status !== 'unknown') && <Text color={palette.muted}>
+              {task.verification?.status && task.verification.status !== 'unknown' ? `${tr('verification')}: ` : ''}{verificationLabel(lang, task.verification?.status ?? 'unknown')}
+              {task.verification?.source === 'assistant' ? ` · ${tr('assistantReported')}` : ''}
+            </Text>}
+            {expanded && task.verification?.evidence && <Text color={palette.muted}>{task.verification.evidence}</Text>}
+
           </Box>
         </Box>;
       })}
+    </Box>
+    <Box flexDirection="column" gap="sm" borderStyle="single" borderColor={palette.border} backgroundColor={palette.background} padding="sm">
+      <Text color={palette.ink} bold>{tr('preferences')}</Text>
+      <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="wrap">
+        <Text color={palette.ink}>{tr('language')}</Text>
+        <Button key="language" variant={buttonVariant} label={lang === 'zh' ? 'EN' : '中文'}
+          onPress={() => switchLanguage($, sessionId, lang === 'zh' ? 'en' : 'zh')} />
+      </Box>
+      <Box flexDirection="row" gap="xs" alignItems="center" flexWrap="wrap">
+        <Text color={palette.ink}>{tr('theme')}</Text>
+        {themes.map(value => {
+          const selected = value === theme;
+          const label = `${tr(value)}${selected ? ` · ${tr('selected')}` : ''}`;
+          return <Button key={`theme:${value}`} label={label} variant={selected ? 'primary' : buttonVariant}
+            onPress={() => switchTheme($, sessionId, value)} />;
+        })}
+      </Box>
+      <Box flexDirection="column" gap="xs">
+        <Box flexDirection="row" justifyContent="space-between" alignItems="center" gap="sm">
+          <Text color={palette.muted}>{tr('version')}</Text>
+          <Button key="expand-version" variant={buttonVariant}
+            label={p.selected === 'version' ? tr('collapse') : tr('expand')}
+            onPress={() => toggle('version')} />
+        </Box>
+        {p.selected === 'version' && <Box flexDirection="column" gap="xs">
+          <Text color={palette.ink}>{tr('pluginVersion')}: {version || tr('unavailable')}</Text>
+          <Text color={palette.ink}>{tr('revision')}: {revision}</Text>
+        </Box>}
+      </Box>
     </Box>
   </Box>;
 }
