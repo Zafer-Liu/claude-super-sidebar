@@ -1,0 +1,11 @@
+.claude-plugin/types/
+node_modules/
+*.log
+.DS_Store
+.playwright-mcp/
+
+# Local preview configuration and private verification artifacts
+.claude/
+verification/**/*.png
+verification/**/fixture/
+docs/images/status-panel-live.png

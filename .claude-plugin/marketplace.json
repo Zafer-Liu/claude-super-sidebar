@@ -1,0 +1,5 @@
+{
+  "name": "team-panel-local",
+  "owner": { "name": "Zafer_Liu" },
+  "plugins": [{ "name": "team-panel", "source": "./" }]
+}

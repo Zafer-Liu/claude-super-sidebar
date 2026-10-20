@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-labelledby="title desc">
+  <title id="title">Team Panel</title>
+  <desc id="desc">Native agent visibility and conversation task flow.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101927"/><stop offset="1" stop-color="#172c3b"/></linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#94b9cd" stroke-opacity=".055"/></pattern>
+  </defs>
+  <rect width="1280" height="400" rx="20" fill="url(#bg)"/>
+  <rect width="1280" height="400" rx="20" fill="url(#grid)"/>
+  <path d="M64 72H104" stroke="#70dfb0" stroke-width="4"/>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <text x="60" y="201" fill="#f3f7fb" font-size="72" font-weight="700" letter-spacing="-3">Team Panel</text>
+    <text x="64" y="248" fill="#b6c8d6" font-size="23">Every agent. Every step. One native pane.</text>
+    <text x="64" y="326" fill="#8da7ba" font-size="14" letter-spacing="1">AGENT TREE  /  LIVE STATUS  /  TASK FLOW</text>
+    <g fill="none" stroke="#58768a" stroke-width="2">
+      <path d="M944 148V182H826V218M944 182H1096V218"/>
+      <path d="M944 182V306H1096" stroke-dasharray="5 7"/>
+    </g>
+    <rect x="837" y="80" width="214" height="68" rx="12" fill="#203e3c" stroke="#64cda2"/>
+    <circle cx="862" cy="114" r="5" fill="#70dfb0"/>
+    <text x="879" y="120" fill="#d9f9e9" font-size="18" font-weight="600">Main agent</text>
+    <rect x="732" y="218" width="188" height="64" rx="12" fill="#23364d" stroke="#749bd5"/>
+    <circle cx="756" cy="250" r="5" fill="#92b8f1"/>
+    <text x="773" y="256" fill="#dceaff" font-size="17">Explore</text>
+    <rect x="1002" y="218" width="188" height="64" rx="12" fill="#203e3c" stroke="#64cda2"/>
+    <circle cx="1026" cy="250" r="5" fill="#70dfb0"/>
+    <text x="1043" y="256" fill="#d9f9e9" font-size="17">Build</text>
+    <text x="1006" y="334" fill="#8da7ba" font-size="13" letter-spacing="1">CONNECTED BY CONTEXT</text>
+  </g>
+</svg>

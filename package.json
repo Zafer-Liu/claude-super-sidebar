@@ -1,0 +1,14 @@
+{
+  "name": "team-panel",
+  "version": "0.2.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "description": "Claude native pane and read-only local Codex session panel",
+  "engines": { "node": ">=22.18" },
+  "scripts": {
+    "codex": "node codex/server.mjs",
+    "test": "node --test codex/*.test.mjs",
+    "test:claude": "node --test codex/claude.test.mjs",
+    "test:codex": "node --test codex/model.test.mjs codex/reader.test.mjs codex/server.test.mjs"
+  }
+}

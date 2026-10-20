@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>状态 status</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <div><h1>状态 <span>status</span></h1><p>Codex 本地会话 · 只读观察</p></div>
+    <button id="refresh" type="button">刷新</button>
+  </header>
+  <main>
+    <p id="notice" class="notice" role="status" aria-live="polite">正在连接本地会话记录…</p>
+    <div class="workspace">
+      <section aria-labelledby="team-heading">
+        <div class="section-heading"><h2 id="team-heading">团队面板 <span>Team panel</span></h2><span id="counts"></span></div>
+        <div id="agents"><p class="empty">等待会话记录</p></div>
+      </section>
+      <section aria-labelledby="flow-heading">
+        <div class="section-heading"><h2 id="flow-heading">任务流 <span>· Task Flow</span></h2><span id="progress"></span></div>
+        <div id="plan"></div>
+        <ol id="flow" class="flow"></ol>
+        <p id="flow-empty" class="empty">等待本轮工作步骤</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "team-panel",
+  "version": "0.2.0",
+  "description": "Live agent family and task panel for Claude Desktop Code",
+  "types": "./types/index.d.ts",
+  "author": {
+    "name": "Zafer_Liu"
+  }
+}
