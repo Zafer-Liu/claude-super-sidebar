@@ -24,8 +24,12 @@ export function mergeMembers(old: Member[], live: Array<{
   const map = new Map(old.map(m => [m.id, m]));
   for (const agent of live) {
     const previous = map.get(agent.id);
+    // Display name: task description first (e.g. "Implement contract data core"),
+    // then the agent's addressable name, then its type. A bare type like
+    // "general-purpose" is identical across agents and useless as a title.
+    const display = agent.description?.trim() || agent.name || agent.type;
     map.set(agent.id, {
-      ...previous, id: agent.id, name: agent.name || agent.type,
+      ...previous, id: agent.id, name: display,
       description: agent.description, type: agent.type, parentId: agent.parentId,
       status: agent.status, observedAt: previous?.observedAt ?? now,
       calls: previous?.calls ?? 0, recent: previous?.recent ?? '',
