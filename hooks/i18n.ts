@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code';
 import type { EngineInterface, SessionMessage } from 'claude-code';
 import type { Language, Preferences, Task, Theme } from '../types';
 
-export const preferences = atom({ plugin: 'team-panel', key: 'preferences' } as const,
+export const preferences = atom({ plugin: 'super-sidebar', key: 'preferences' } as const,
   { language: 'zh', theme: 'white', revision: 0, loaded: false } as Preferences);
 
 const words = {
@@ -138,7 +138,7 @@ async function switchPreferences($: EngineInterface, sessionId: string, choice: 
   if (saves.get(sessionId) === save) saves.delete(sessionId);
   if (await $.session.id() === sessionId) {
     const latest = await read($, preferences);
-    if (latest.sessionId === sessionId) await $.ui.open({ id: 'team-panel', title: paneTitle(latest.language) });
+    if (latest.sessionId === sessionId) await $.ui.open({ id: 'super-sidebar', title: paneTitle(latest.language) });
   }
 }
 

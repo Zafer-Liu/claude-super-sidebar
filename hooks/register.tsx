@@ -5,9 +5,9 @@ import { drawPanel } from './pane';
 import { conversationSteps, proseTitle, operationTitle, operationSubject, verification } from './steps';
 import { loadPreferences, paneTitle, t } from './i18n';
 
-const panel = atom({ plugin: 'team-panel', key: 'panel' } as const, initial);
-const pane = 'team-panel';
-const preferences = atom({ plugin: 'team-panel', key: 'preferences' } as const, { language: 'zh', theme: 'white', revision: 0, loaded: false } as import('../types').Preferences);
+const panel = atom({ plugin: 'super-sidebar', key: 'panel' } as const, initial);
+const pane = 'super-sidebar';
+const preferences = atom({ plugin: 'super-sidebar', key: 'preferences' } as const, { language: 'zh', theme: 'white', revision: 0, loaded: false } as import('../types').Preferences);
 const observe = async (action: () => Promise<unknown>) => {
   try { await action(); } catch { /* Panel failures must never affect execution. */ }
 };
@@ -48,7 +48,7 @@ export const register: Register = on => {
       await loadPreferences($);
       const pref = await read($, preferences);
       const language = pref.sessionId === sessionId ? pref.language : 'zh';
-      await $.command.register({ name: 'team-panel', description: t(language, 'command') });
+      await $.command.register({ name: 'super-sidebar', description: t(language, 'command') });
       await update($, panel, p => ({ ...p, project: e.cwd.split(/[\\/]/).filter(Boolean).pop() || e.cwd }));
       await refresh($);
       $.clock.every(2000, () => { void refresh($); });
@@ -56,7 +56,7 @@ export const register: Register = on => {
     });
     return next(e);
   });
-  on('command.run', { command: 'team-panel' }, async $ => {
+  on('command.run', { command: 'super-sidebar' }, async $ => {
     await refresh($);
     await loadPreferences($);
     const sessionId = await $.session.id();

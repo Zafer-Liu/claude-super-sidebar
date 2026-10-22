@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/images/banner.svg" alt="Claude Super Sidebar — native agent visibility and task flow" width="100%" />
-</p>
+![Claude Super Sidebar — native agent visibility and task flow](docs/images/banner.svg)
 
 <p align="center">
   <strong>See your agents. Follow the work.</strong><br />
@@ -32,7 +30,7 @@
 
 Claude Super Sidebar brings the main agent, subagent relationships, execution details, and the current conversation’s work steps into one panel. Claude Code uses a native plugin pane; standalone Codex CLI/App uses a read-only local session dashboard. Neither requires a frontend build.
 
-The repository and product are **Claude Super Sidebar** (`claude-super-sidebar`). The native plugin retains the ID `team-panel` because the host reserves the `claude-` prefix. The Claude plugin ID is `team-panel`, with a native pane titled **状态 · Status**. The Codex page is titled **状态 status**, and its team section is **团队面板 Team panel**. Each adapter uses its host's own data source; task summaries require no additional model call.
+The repository and product are **Claude Super Sidebar** (`claude-super-sidebar`). The plugin installs as `super-sidebar`, with a native pane titled **状态 · Status**. The host reserves the `claude-` prefix, so a plugin ID cannot start with `claude-`; the product name stays with the repository and this README. The Codex page is titled **状态 status**, and its team section is **团队面板 Team panel**. Each adapter uses its host's own data source; task summaries require no additional model call.
 
 | Integration | Data source and UI | Current validation |
 | --- | --- | --- |
@@ -41,9 +39,7 @@ The repository and product are **Claude Super Sidebar** (`claude-super-sidebar`)
 
 ## Preview
 
-<p align="center">
-  <img src="docs/images/panel-overview.svg" alt="Single-column overview of agent relationships, stage-grouped task flow, and preferences" width="100%" />
-</p>
+![Single-column overview of agent relationships, stage-grouped task flow, and preferences](docs/images/panel-overview.svg)
 
 Illustrative layout with sample data, not a runtime screenshot. The single column shows agent relationships, a stage-grouped task flow, and a preferences container. Container colors (white, beige, black) apply to the cards only; the surrounding page background stays unchanged. Actual rendering differs between the Claude native pane and Codex browser panel.
 
@@ -73,13 +69,20 @@ Developed against **Claude Code engine 2.1.299**, using an early-access plugin A
 
 ### Claude Desktop Code
 
-Download or clone the repository, then run this from its root:
+Add the marketplace straight from GitHub, then install the plugin:
 
 ```bash
-claude plugin install team-panel --marketplace . --scope user
+claude plugin marketplace add Zafer-Liu/claude-super-sidebar
+claude plugin install super-sidebar@super-sidebar
 ```
 
-Verify that `team-panel@team-panel-local` has scope `user` and `enabled: true`:
+Prefer a local clone? Run this from the repository root instead:
+
+```bash
+claude plugin install super-sidebar --marketplace . --scope user
+```
+
+Verify that `super-sidebar@super-sidebar` has scope `user` and `enabled: true`:
 
 ```bash
 claude plugin list --json
@@ -88,10 +91,10 @@ claude plugin list --json
 If it is installed but disabled:
 
 ```bash
-claude plugin enable team-panel@team-panel-local
+claude plugin enable super-sidebar@super-sidebar
 ```
 
-Start a new Code session to load the plugin. User scope makes it available across projects for the current user. Keep the repository at its installation location: the verified local installation reads from the source folder.
+Start a new Code session to load the plugin. User scope makes it available across projects for the current user. The GitHub marketplace installs a cached copy, so the clone can live anywhere; a local-path install reads from the source folder, so keep the repository in place for that route.
 
 If `claude` is not on `PATH`, invoke your host’s matching Claude Code executable by its full path. Project overrides and organization policies may affect plugin loading.
 
@@ -99,7 +102,7 @@ If `claude` is not on `PATH`, invoke your host’s matching Claude Code executab
 
 These controls apply to the Claude native plugin. See [Codex configuration](#codex-configuration) for the local dashboard and conversation binding.
 
-The plugin attempts to open **状态 · Status** on session startup. Type `/team-panel` in the conversation input to reopen it.
+The plugin attempts to open **状态 · Status** on session startup. Type `/super-sidebar` in the conversation input to reopen it.
 
 | Section | What it shows |
 | --- | --- |

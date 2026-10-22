@@ -5,8 +5,8 @@ import { summaryBody } from './steps';
 import type { Theme } from '../types';
 import { activityLabel, generatedLabel, operationLabel, statusLabel, taskStatusLabel, verificationLabel, switchLanguage, switchTheme, t, taskTitle } from './i18n';
 
-const panel = atom({ plugin: 'team-panel', key: 'panel' } as const, initial);
-const preferences = atom({ plugin: 'team-panel', key: 'preferences' } as const, { language: 'zh', theme: 'white', revision: 0, loaded: false } as import('../types').Preferences);
+const panel = atom({ plugin: 'super-sidebar', key: 'panel' } as const, initial);
+const preferences = atom({ plugin: 'super-sidebar', key: 'preferences' } as const, { language: 'zh', theme: 'white', revision: 0, loaded: false } as import('../types').Preferences);
 const palettes = {
   white: { background: '#ffffff', ink: '#292d35', muted: '#606570', border: '#b5bac3', connector: '#767c88',
     running: '#23733e', completed: '#255fbb', failed: '#b42332', waiting: '#805800' },

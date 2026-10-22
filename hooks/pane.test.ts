@@ -3,7 +3,7 @@ import { test, expect } from 'claude-code/testing';
 for (const surface of ['desktop', 'terminal'] as const) {
   test(`renders the team pane on ${surface}`, async $ => {
     const ui = await $.ui.mount({
-      plugin: 'team-panel', surface, component: 'Pane', requestId: 'team-panel',
+      plugin: 'super-sidebar', surface, component: 'Pane', requestId: 'super-sidebar',
       props: { title: 'Team', isFocused: false, bodyColumns: 60, placement: 'dock',
         scroll: { top: 0, left: 0, bodyRows: 40 }, view: {} },
     });

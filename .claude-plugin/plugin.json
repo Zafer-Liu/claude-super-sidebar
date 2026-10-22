@@ -1,9 +1,22 @@
 {
-  "name": "team-panel",
+  "name": "super-sidebar",
+  "displayName": "Super Sidebar",
   "version": "0.2.0",
-  "description": "Live agent family and task panel for Claude Desktop Code",
+  "description": "Live agent family and task panel for Claude Desktop Code, plus a read-only local Codex session dashboard",
   "types": "./types/index.d.ts",
   "author": {
-    "name": "Zafer_Liu"
-  }
+    "name": "Zafer_Liu",
+    "url": "https://www.zaferliu.me"
+  },
+  "homepage": "https://github.com/Zafer-Liu/claude-super-sidebar#readme",
+  "repository": "https://github.com/Zafer-Liu/claude-super-sidebar",
+  "license": "Apache-2.0",
+  "keywords": [
+    "agents",
+    "subagents",
+    "sidebar",
+    "status",
+    "task-flow",
+    "codex"
+  ]
 }

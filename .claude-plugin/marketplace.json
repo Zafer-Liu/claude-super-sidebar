@@ -1,5 +1,14 @@
 {
-  "name": "team-panel-local",
-  "owner": { "name": "Zafer_Liu" },
-  "plugins": [{ "name": "team-panel", "source": "./" }]
+  "name": "super-sidebar",
+  "owner": { "name": "Zafer_Liu", "url": "https://www.zaferliu.me" },
+  "description": "Native agent visibility and task flow for Claude Code, with a read-only local Codex session panel.",
+  "plugins": [
+    {
+      "name": "super-sidebar",
+      "source": "./",
+      "description": "See your agents and follow the work: agent tree, live status, and stage-grouped task flow in a native Claude pane, plus a local Codex session dashboard.",
+      "category": "developer-tools",
+      "tags": ["agents", "subagents", "sidebar", "status", "task-flow", "codex"]
+    }
+  ]
 }

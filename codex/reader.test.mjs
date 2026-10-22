@@ -7,7 +7,7 @@ import { RolloutReader, SessionStore } from './reader.mjs';
 
 const line = (type, payload) => JSON.stringify({ timestamp: '2026-10-20T00:00:00Z', type, payload }) + '\n';
 async function fixture(t) {
-  const root = await mkdtemp(path.join(os.tmpdir(), 'team-panel-'));
+  const root = await mkdtemp(path.join(os.tmpdir(), 'super-sidebar-'));
   t.after(() => rm(root, { recursive: true, force: true }));
   return root;
 }

@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="docs/images/banner.svg" alt="Claude Super Sidebar — 原生代理状态与任务流面板" width="100%" />
-</p>
+![Claude Super Sidebar — 原生代理状态与任务流面板](docs/images/banner.svg)
 
 <p align="center">
   <strong>看见代理状态，跟进每一步工作。</strong><br />
@@ -32,7 +30,7 @@
 
 Claude Super Sidebar 将主代理、子代理关系、实时执行详情和本轮对话的工作步骤整合到一个面板中。Claude Code 使用原生插件面板；独立 Codex CLI/App 使用只读本地会话面板。两种模式均无需构建前端。
 
-仓库与产品名称为 **Claude Super Sidebar**（`claude-super-sidebar`）。宿主保留 `claude-` 前缀，因此原生插件安装 ID 继续使用 `team-panel`。Claude 插件名称为 `team-panel`，原生面板标题为 **状态 · Status**。Codex 页面标题为 **状态 status**，团队区域标题为 **团队面板 Team panel**。两种接入使用各自宿主的数据源，不需要额外调用模型生成任务摘要。
+仓库与产品名称为 **Claude Super Sidebar**（`claude-super-sidebar`）。插件安装 ID 为 `super-sidebar`，原生面板标题为 **状态 · Status**。宿主保留 `claude-` 前缀，插件 ID 不能以 `claude-` 开头，产品名称保留在仓库与本文档中。Codex 页面标题为 **状态 status**，团队区域标题为 **团队面板 Team panel**。两种接入使用各自宿主的数据源，不需要额外调用模型生成任务摘要。
 
 | 接入 | 数据源与界面 | 当前验证范围 |
 | --- | --- | --- |
@@ -41,9 +39,7 @@ Claude Super Sidebar 将主代理、子代理关系、实时执行详情和本�
 
 ## 运行效果
 
-<p align="center">
-  <img src="docs/images/panel-overview.svg" alt="单列布局的代理关系、阶段分组任务流与偏好设置示意图" width="100%" />
-</p>
+![单列布局的代理关系、阶段分组任务流与偏好设置示意图](docs/images/panel-overview.svg)
 
 界面示意图，使用虚构示例数据，并非运行截图。单列布局依次展示代理关系、按阶段分组的任务流和偏好设置。容器配色（白色、米色、黑色）仅作用于卡片，外围背景保持不变。Claude 原生面板与 Codex 浏览器面板的实际绘制有所不同。
 
@@ -73,13 +69,20 @@ Claude Super Sidebar 将主代理、子代理关系、实时执行详情和本�
 
 ### Claude Desktop Code
 
-下载或克隆仓库，在仓库根目录执行：
+直接从 GitHub 添加市场，再安装插件：
 
 ```bash
-claude plugin install team-panel --marketplace . --scope user
+claude plugin marketplace add Zafer-Liu/claude-super-sidebar
+claude plugin install super-sidebar@super-sidebar
 ```
 
-检查 `team-panel@team-panel-local` 的安装范围是否为 `user`，且 `enabled` 是否为 `true`：
+更倾向本地克隆？在仓库根目录执行：
+
+```bash
+claude plugin install super-sidebar --marketplace . --scope user
+```
+
+检查 `super-sidebar@super-sidebar` 的安装范围是否为 `user`，且 `enabled` 是否为 `true`：
 
 ```bash
 claude plugin list --json
@@ -88,10 +91,10 @@ claude plugin list --json
 如果已安装但未启用：
 
 ```bash
-claude plugin enable team-panel@team-panel-local
+claude plugin enable super-sidebar@super-sidebar
 ```
 
-安装后新建 Code 会话以加载插件。用户级安装适用于当前用户的各个项目。请保留仓库的安装位置：已验证的本地安装会从源目录读取插件。
+安装后新建 Code 会话以加载插件。用户级安装适用于当前用户的各个项目。GitHub 市场安装的是缓存副本，克隆目录可放在任意位置；本地路径安装会从源目录读取，该方式请保留仓库位置。
 
 如果 `claude` 不在 `PATH` 中，请使用宿主所配套 Claude Code 可执行文件的完整路径。项目覆盖设置和组织策略可能影响插件加载。
 
@@ -99,7 +102,7 @@ claude plugin enable team-panel@team-panel-local
 
 以下为 Claude 原生插件操作。Codex 的启动与对话绑定见下方 [Codex 配置](#codex-配置)。
 
-插件会在会话启动时尝试打开 **状态 · Status**。关闭后，在对话输入框中输入 `/team-panel` 可重新打开。
+插件会在会话启动时尝试打开 **状态 · Status**。关闭后，在对话输入框中输入 `/super-sidebar` 可重新打开。
 
 | 区块 | 展示内容 |
 | --- | --- |

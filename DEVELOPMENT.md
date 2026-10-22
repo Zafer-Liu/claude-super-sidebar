@@ -23,7 +23,7 @@ Developed against local Claude Code engine 2.1.299.
 - No application build, package installation, git commit or prototype push performed.
 - Actual live Desktop rendering awaits the session dev-mod hot-reload decision and end-of-turn load.
 
-The plugin uses an early-access engine API. Plugin name is `team-panel`; `claude-` names are reserved by the engine.
+The plugin uses an early-access engine API. Plugin name is `super-sidebar`; `claude-` names are reserved by the engine.
 
 ## Data correctness
 

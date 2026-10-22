@@ -71,6 +71,6 @@ export type Panel = {
 };
 declare module 'claude-code' {
   interface PluginState {
-    'team-panel': { panel: Panel; preferences: Preferences };
+    'super-sidebar': { panel: Panel; preferences: Preferences };
   }
 }

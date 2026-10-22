@@ -1,0 +1,22 @@
+{
+  "name": "super-sidebar",
+  "interface": {
+    "displayName": "Super Sidebar"
+  },
+  "plugins": [
+    {
+      "name": "super-sidebar",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/Zafer-Liu/claude-super-sidebar",
+        "path": "./codex",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}
